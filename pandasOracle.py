@@ -210,7 +210,7 @@ yipinqiehuan.to_excel(writer,'yipinqiehuan')      #保存表格为excel, 第二�
 tongpinqiehuan = df.loc[(df[u'同频切换成功率'] < 95 ) & (df[u'异频切换成功率'] != 0 ) & (df[u'同频切换请求次数'] >= 100)]
 tongpinqiehuan.to_excel(writer,'tongpinqiehuan')      #保存表格为excel, 第二个参数为sheet名
 
-PrbInterference = df[df[u'平均每PRB干扰噪声功率'] >= -103]
+PrbInterference = df.loc[(df[u'平均每PRB干扰噪声功率'] >= -103 ) & (df[u'平均每PRB干扰噪声功率'] != 0)]
 PrbInterference.to_excel(writer,'PrbInterference')      #保存表格为excel, 第二个参数为sheet名
 
 CQI = df.loc[(df[u'CQI小于等于6的比例'] >= 20 ) & (df[u'CQI总采样点'] >= 1000)]
