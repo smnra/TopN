@@ -121,30 +121,30 @@ sql = r"""
               and lho.LNCEL_ID= lpqul.LNCEL_ID(+)
               AND lpqul.LNCEL_ID= lpqdl.LNCEL_ID(+)
               and lpqdl.LNCEL_ID(+)= cu.lncel_objid AND
-                 lcelav.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lcelav.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 luest.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 luest.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lepsb.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lepsb.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lcellt.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lcellt.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lcellr.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lcellr.PERIOD_START_TIME <To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lianbho.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lianbho.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lisho.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lisho.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lcelld.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lcelld.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lienbho.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lienbho.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lho.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lho.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') And
-                 lpqul.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lpqul.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24') AND
-                 lpqdl.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
-                 lpqdl.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
+                 lcelav.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcelav.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 luest.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 luest.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lepsb.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lepsb.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcellt.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcellt.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcellr.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcellr.PERIOD_START_TIME <To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lianbho.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lianbho.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lisho.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lisho.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcelld.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lcelld.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lienbho.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lienbho.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lho.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lho.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lpqul.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lpqul.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24') AND
+                 lpqdl.PERIOD_START_TIME >= To_Date(%s, 'yyyy-mm-dd-hh24') And
+                 lpqdl.PERIOD_START_TIME < To_Date(%s, 'yyyy-mm-dd-hh24')
 
               and lcelav.PERIOD_START_TIME=luest.PERIOD_START_TIME(+)
               and luest.PERIOD_START_TIME=lepsb.PERIOD_START_TIME(+)
@@ -189,8 +189,10 @@ df = pd.DataFrame(rows,columns = col)         #转化为DataFream  并添加 列
 
 #rrcTopN = df[df[u'RRC连接成功率'] < 99]
 rrcTopN = df.loc[(df[u'RRC连接成功率'] < 99 ) & (df[u'RRC连接请求次数'] >= 100)]
+rrcTopN.to_excel('./TopN.xlsx',sheet_name = 'rrcTopN')
 
 ErabTopN = df.loc[(df[u'ERAB建立成功率'] < 99 ) & (df[u'ERAB建立请求次数'] >= 100)]
+ErabTopN.to_excel('./TopN.xlsx',sheet_name = 'ErabTopN')
 
 RrcCongestion = df[df[u'RRC拥塞率'] < 99]
 
@@ -205,9 +207,9 @@ PrbInterference = df[df[u'平均每PRB干扰噪声功率'] >= -105]
 CQI = df.loc[(df[u'CQI小于等于6的比例'] >= 20 ) & (df[u'CQI总采样点'] >= 1000)]
 
 
-print(rrcTopN)
+#print(rrcTopN)
 
-print df
+#print df
 cursor.close ()                    #关闭游标
 conn.close ()						 #关闭数据库连接
 
