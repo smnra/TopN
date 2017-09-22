@@ -7,7 +7,7 @@ sys.setdefaultencoding('utf-8')
 
 import cx_Oracle        #导入oracle 支持模块
 import os                   #导入系统 模块
-import datetime         #导入 时间日期 模块
+from datetime import datetime         #导入 时间日期 模块
 import pandas as pd
 
 
@@ -187,29 +187,39 @@ for i in cursor.description:
 
 df = pd.DataFrame(rows,columns = col)         #转化为DataFream  并添加 列表 col 为列名
 
+filename = os.getcwd() +  '\\' + datetime.today().strftime("%Y%m%d") + '_TopN.xlsx' #定义文件名
+writer = pd.ExcelWriter(filename)       #保存表格为excel
+
 #rrcTopN = df[df[u'RRC连接成功率'] < 99]
 rrcTopN = df.loc[(df[u'RRC连接成功率'] < 99 ) & (df[u'RRC连接请求次数'] >= 100)]
-rrcTopN.to_excel('./TopN.xlsx',sheet_name = 'rrcTopN')
+rrcTopN.to_excel(writer,'rrcTopN')      #保存表格为excel, 第二个参数为sheet名
+
 
 ErabTopN = df.loc[(df[u'ERAB建立成功率'] < 99 ) & (df[u'ERAB建立请求次数'] >= 100)]
-ErabTopN.to_excel('./TopN.xlsx',sheet_name = 'ErabTopN')
+ErabTopN.to_excel(writer,'ErabTopN')      #保存表格为excel, 第二个参数为sheet名
 
 RrcCongestion = df[df[u'RRC拥塞率'] < 99]
+RrcCongestion.to_excel(writer,'RrcCongestion')      #保存表格为excel, 第二个参数为sheet名
 
 EraCongestion = df[df[u'ERAB拥塞率'] > 0.5]
+EraCongestion.to_excel(writer,'EraCongestion')      #保存表格为excel, 第二个参数为sheet名
 
 yipinqiehuan = df[df[u'异频切换成功率'] < 95]
+yipinqiehuan.to_excel(writer,'yipinqiehuan')      #保存表格为excel, 第二个参数为sheet名
 
 tongpinqiehuan = df.loc[(df[u'同频切换成功率'] < 95 ) & (df[u'同频切换请求次数'] >= 100)]
+tongpinqiehuan.to_excel(writer,'tongpinqiehuan')      #保存表格为excel, 第二个参数为sheet名
 
 PrbInterference = df[df[u'平均每PRB干扰噪声功率'] >= -105]
+PrbInterference.to_excel(writer,'PrbInterference')      #保存表格为excel, 第二个参数为sheet名
 
 CQI = df.loc[(df[u'CQI小于等于6的比例'] >= 20 ) & (df[u'CQI总采样点'] >= 1000)]
+CQI.to_excel(writer,'CQI')      #保存表格为excel, 第二个参数为sheet名
 
 
-#print(rrcTopN)
 
-#print df
+writer.save()                           #保存表格为excel
+
 cursor.close ()                    #关闭游标
 conn.close ()						 #关闭数据库连接
 
