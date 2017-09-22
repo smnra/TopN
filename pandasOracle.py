@@ -187,7 +187,7 @@ for i in cursor.description:
 
 df = pd.DataFrame(rows,columns = col)         #转化为DataFream  并添加 列表 col 为列名
 
-filename = os.getcwd() +  '\\' + datetime.today().strftime("%Y%m%d") + '_TopN.xlsx' #定义文件名
+filename = os.getcwd() +  '\\' + datetime.today().strftime("%Y%m%d") + '_LTE_TopN.xlsx' #定义文件名
 writer = pd.ExcelWriter(filename)       #保存表格为excel
 
 #rrcTopN = df[df[u'RRC连接成功率'] < 99]
@@ -198,7 +198,7 @@ rrcTopN.to_excel(writer,'rrcTopN')      #保存表格为excel, 第二个参数�
 ErabTopN = df.loc[(df[u'ERAB建立成功率'] < 99 ) & (df[u'ERAB建立请求次数'] >= 100)]
 ErabTopN.to_excel(writer,'ErabTopN')      #保存表格为excel, 第二个参数为sheet名
 
-RrcCongestion = df[df[u'RRC拥塞率'] < 99]
+RrcCongestion = df[df[u'RRC拥塞率'] > 0.5]
 RrcCongestion.to_excel(writer,'RrcCongestion')      #保存表格为excel, 第二个参数为sheet名
 
 EraCongestion = df[df[u'ERAB拥塞率'] > 0.5]
