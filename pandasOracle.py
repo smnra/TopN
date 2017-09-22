@@ -204,13 +204,13 @@ RrcCongestion.to_excel(writer,'RrcCongestion')      #保存表格为excel, 第�
 EraCongestion = df[df[u'ERAB拥塞率'] > 0.5]
 EraCongestion.to_excel(writer,'EraCongestion')      #保存表格为excel, 第二个参数为sheet名
 
-yipinqiehuan = df[df[u'异频切换成功率'] < 95]
+yipinqiehuan = df.loc[(df[u'异频切换成功率'] < 95 ) & (df[u'异频切换请求次数'] >= 100)]
 yipinqiehuan.to_excel(writer,'yipinqiehuan')      #保存表格为excel, 第二个参数为sheet名
 
 tongpinqiehuan = df.loc[(df[u'同频切换成功率'] < 95 ) & (df[u'同频切换请求次数'] >= 100)]
 tongpinqiehuan.to_excel(writer,'tongpinqiehuan')      #保存表格为excel, 第二个参数为sheet名
 
-PrbInterference = df[df[u'平均每PRB干扰噪声功率'] >= -105]
+PrbInterference = df[df[u'平均每PRB干扰噪声功率'] >= -103]
 PrbInterference.to_excel(writer,'PrbInterference')      #保存表格为excel, 第二个参数为sheet名
 
 CQI = df.loc[(df[u'CQI小于等于6的比例'] >= 20 ) & (df[u'CQI总采样点'] >= 1000)]
