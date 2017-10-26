@@ -23,30 +23,17 @@ from email.header import Header
 
 
 
-sender = 'hppall@163.com'
-receiver = 'smnra@163.com'
-subject = 'KPI结果'
-smtpserver = 'smtp.163.com'
-username = 'hppall'
-password = '3615165'
+sender = 'hppall@163.com'  
+receiver = 'smnra@163.com'  
+subject = 'KPI结果'  
+smtpserver = 'smtp.163.com'  
+username = 'hppall'  
+password = '3615165'  
 msg = MIMEMultipart()
 
 # 下面是文字部分，也就是纯文本
-puretext = MIMEText('TopN小区','plain','utf-8')   #中文需参数‘utf-8'，单字节字符不需要
+puretext = MIMEText('Pyton自动发送邮件测试内容.','plain','utf-8')#中文需参数‘utf-8'，单字节字符不需要
 msg.attach(puretext)
-
-
-
-# 首先是xlsx类型的附件
-xlsxpart = MIMEApplication(open('20170922_LTE_TopN.xlsx', 'rb').read())
-xlsxpart.add_header('Content-Disposition', 'attachment', filename='20170922_LTE_TopN.xlsx')
-msg.attach(xlsxpart)
-
-# jpg类型的附件
-jpgpart = MIMEApplication(open('erab.jpg', 'rb').read())
-jpgpart.add_header('Content-Disposition', 'attachment', filename='erab.jpg')
-msg.attach(jpgpart)
-
 
 
 
@@ -71,4 +58,17 @@ except smtplib.SMTPException as e:
     print(e)
 
 
+
+
+'''
+msg['Subject'] = Header(subject, 'utf-8')
+msg['From'] = 'SMnRa<hppall@163.com>'
+msg['To'] = "smnra@163.com"
+smtp = smtplib.SMTP()
+smtp.connect('smtp.163.com')
+smtp.login(username, password)
+smtp.sendmail(sender, receiver, msg.as_string())
+smtp.quit()
+
+'''
 

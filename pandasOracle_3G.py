@@ -27,12 +27,12 @@ end_datetime = '2017102600'
 
 
 
-sqlFiles = getfiles.getGzipList(os.getcwd()+ '\\wcdma_sql','.SQL')
+sqlFiles = getfiles.getGzipList(os.getcwd()+ '\sql','.SQL')
 
 sqls = []    #存储sql脚本的列表
 sheetNames = []    #存放sheet名
 for i,sqlFile in enumerate(sqlFiles) :
-    sheetNames.append(sqlFile.decode('utf-8').replace(os.getcwd() + '\\wcdma_sql\\','').split('.')[0])    #将文件名作为sheet名存入
+    sheetNames.append(sqlFile.decode('utf-8').replace(os.getcwd() + '\\sql\\','').split('.')[0])    #将文件名作为sheet名存入
     tmp = open(sqlFile.decode('utf-8'),mode = 'r',encoding='cp936')
     try:
         sqls.append(tmp.read())
@@ -65,19 +65,26 @@ writer = pd.ExcelWriter(filename)       #保存表格为excel
 for i,sql in enumerate(sqls) :
     cursor.execute(proessSQL(sql))  # 执行的sql语句
     rows = cursor.fetchall()        #一次取回所有记录,保存到rows中. rows为一个 列表, rows的元素还是一个列表,所以他的结构 就是 rows的每一个元素为一个列表(一行记录)
+
     col = []
     for k in cursor.description:
         col.append(k[0])
-    tables.append(pd.DataFrame(rows,columns = col))         #转化为DataFream  并添加 列表 col 为列名
+
+    df = pd.DataFrame(rows,columns = col)         #转化为DataFream  并添加 列表 col 为列名
+    tables.append(df)
     print(str(tables[i]))
+
+
     #rrcTopN = df.loc[(df[u'RRC连接成功率'] < 99 ) & (df[u'RRC连接请求次数'] >= 100)]
     print(sheetNames[i],i)
-    tables[i].to_excel(writer,sheetNames[i])      #保存表格为excel, 第二个参数(sql文件的名称)为sheet名
-writer.save()                           #保存表格为excel
+    df.to_excel(writer,sheetNames[i])      #保存表格为excel, 第二个参数(sql文件的名称)为sheet名
+    writer.save()                           #保存表格为excel
 cursor.close ()                    #关闭游标
 conn.close ()						 #关闭数据库连接
 
 
+
+'''
 mailreceiver = 'smnra@163.com'
 mailTitle = '3G_TopN小区'
 mailBody = 'WCDMA ' + start_datetime + ' - ' + end_datetime + 'Top 小区'
@@ -85,3 +92,4 @@ mailAttachments = [filename]
 
 sendmail = SMTPProxy.SendMail(mailreceiver, mailTitle, mailBody, mailAttachments)    #邮件发送
 sendmail.senmail()
+'''
