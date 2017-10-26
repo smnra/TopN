@@ -1,18 +1,34 @@
 ﻿# coding = utf-8
 # -*- coding: utf-8 -*-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
+import os
+os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
+#os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.ZHS16GBK'
+#sys.path.append('D:\\instantclient_12_1')
+os.path.sys.path.append('D:\\instantclient_12_1')
+os.environ['ORACLE_HOME'] = 'D:\\instantclient_12_1'
+os.environ['TNS_ADMIN'] = 'D:\\instantclient_12_1'
 
 
+'''
+os.path.sys.path.append('F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1')
+os.environ['ORACLE_HOME'] = 'F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1'
+os.environ['TNS_ADMIN'] = 'F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1'
+'''
+
+
+import six
+import packaging
+import packaging.version
+import packaging.specifiers
+import packaging.requirements
 import cx_Oracle        #导入oracle 支持模块
-import os                   #导入系统 模块
 from datetime import datetime         #导入 时间日期 模块
 import pandas as pd
 
 
-start_datetime = '2017092002'
-end_datetime = '2017092003'
+start_datetime = '2017102500'
+end_datetime = '2017102600'
 
 
 sql = r"""
@@ -212,7 +228,7 @@ decode(sum((lpqul.SINR_PUSCH_LEVEL_1)+(lpqul.SINR_PUSCH_LEVEL_2)+(lpqul.SINR_PUS
 
 """ %(start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime,start_datetime,end_datetime )
 
-sql = sql.decode('utf-8')
+#sql = sql.encode('utf-8')
 
 
 conn = cx_Oracle.connect('omc/omc@10.100.162.10/oss')       #建立与oracle数据库的连接, 格式为  'user/password@IP/servicename'
@@ -223,8 +239,7 @@ rows = cursor.fetchall()        #一次取回所有记录,保存到rows中. rows
 #cursor.description[8][0].decode("gbk")
 col = []
 for i in cursor.description:
-    i[0].decode("gbk")
-    col.append(i[0].decode("gbk"))
+    col.append(i[0])
 
 
 df = pd.DataFrame(rows,columns = col)         #转化为DataFream  并添加 列表 col 为列名
