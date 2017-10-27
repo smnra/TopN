@@ -1,5 +1,8 @@
     SELECT
-        servlev.WCEL_ID,
+        servlev.city,
+        servlev.wcel_rnc_id,
+        servlev.ci,
+        servlev.wbts_name,
         servlev.rpdate,
         servlev.R99分组域业务掉线率,
         servlev.X_R99分组域业务掉线率,
@@ -33,8 +36,11 @@
             
     FROM
         (Select
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD') rpdate,
             ROUND(Decode(Sum(servlev.RAB_ACT_COMP_PS_CONV + servlev.RAB_ACT_COMP_PS_STREA +
             servlev.RAB_ACT_COMP_PS_INTER + servlev.RAB_ACT_COMP_PS_BACKG +
             servlev.RAB_ACT_REL_PS_CONV_SRNC + servlev.RAB_ACT_REL_PS_CONV_P_EMP +
@@ -144,21 +150,26 @@
             
         From
             NOKRWW_PS_SERVLEV_MNC1_RAW servlev
-            
+        Inner Join c_w_custom c on c.wcel_objid = servlev.WCEL_ID  
+        
         Where
             servlev.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             servlev.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD')
         )  servlev 
         
     WHERE
-        (R99分组域业务掉线率 > 20)
+        (servlev.R99分组域业务掉线率 > 20 and servlev.Y_R99分组域业务掉线率 > 50)
 
     ORDER BY
-        R99分组域业务掉线率  
+        servlev.city,
+        servlev.R99分组域业务掉线率  desc
 
 
 

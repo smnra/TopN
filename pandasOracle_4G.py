@@ -5,16 +5,17 @@ import os
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
 #os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.ZHS16GBK'
 #sys.path.append('D:\\instantclient_12_1')
+
+'''
 os.path.sys.path.append('D:\\instantclient_12_1')
 os.environ['ORACLE_HOME'] = 'D:\\instantclient_12_1'
 os.environ['TNS_ADMIN'] = 'D:\\instantclient_12_1'
-
-
 '''
+
+
 os.path.sys.path.append('F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1')
 os.environ['ORACLE_HOME'] = 'F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1'
 os.environ['TNS_ADMIN'] = 'F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1'
-'''
 
 
 import six
@@ -38,7 +39,7 @@ sql = r"""
             cu.lnbtsid,
             cu.lncel_lcr_id,
             cu.version,
-            to_char(lcelav.period_start_time, 'yyyy-mm-dd-hh24') stdate
+            to_char(lcelav.period_start_time, 'yyyy-mm-dd') stdate
             ,lcelav.LNCEL_ID
             ,round(decode(sum(lcelav.DENOM_CELL_AVAIL),0,0,sum(lcelav.SAMPLES_CELL_AVAIL)/sum(lcelav.DENOM_CELL_AVAIL))*100,2) 小区可用率
             ,sum(lcelav.DENOM_CELL_AVAIL- lcelav.SAMPLES_CELL_AVAIL)*10  退服时长
@@ -222,7 +223,7 @@ decode(sum((lpqul.SINR_PUSCH_LEVEL_1)+(lpqul.SINR_PUSCH_LEVEL_2)+(lpqul.SINR_PUS
             cu.lnbtsid,
             cu.lncel_lcr_id,
             cu.version,
-            to_char(lcelav.period_start_time, 'yyyy-mm-dd-hh24')
+            to_char(lcelav.period_start_time, 'yyyy-mm-dd')
             ,lcelav.LNCEL_ID
             ,cu.version
 

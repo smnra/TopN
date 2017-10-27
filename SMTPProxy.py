@@ -1,13 +1,12 @@
 #coding: utf-8
 import requests
-import smtplib
+import smtplibproxy as smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.header import Header
 
-s = requests.session()
-s.proxies = {'http': '10.22.0.238:3128'}          #设置http代理
+
 
 class SendMail:
     def __init__(self,receiver,title,mainText,attachments):                 #receiver参数是收件人, title是邮件标题,mainText是邮件正文,attachments 参数是附件路径列表

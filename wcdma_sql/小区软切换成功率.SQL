@@ -1,5 +1,9 @@
     SELECT
-        SOFTHO.WCEL_ID,
+        SOFTHO.city,
+        SOFTHO.wcel_rnc_id,
+        SOFTHO.ci,
+        SOFTHO.wbts_name,
+        SOFTHO.rpdate,
         SOFTHO.rpdate,
         SOFTHO.小区软切换成功率,
         SOFTHO.X_小区软切换成功率,
@@ -11,8 +15,11 @@
             
     FROM
         (Select
-            SOFTHO.WCEL_ID,
-            to_char(SOFTHO.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(SOFTHO.period_start_time,'YYYY-MM-DD') rpdate,
 
             ROUND(Decode(Sum(SOFTHO.CELL_ADD_REQ_ON_SHO_FOR_RT + SOFTHO.CELL_DEL_REQ_ON_SHO_FOR_RT +
             SOFTHO.CELL_REPL_REQ_ON_SHO_FOR_RT + SOFTHO.CELL_ADD_REQ_ON_SHO_FOR_NRT +
@@ -35,21 +42,26 @@
             
         From
             NOKRWW_PS_SOFTHO_MNC1_RAW SOFTHO
-         
+            Inner Join c_w_custom c on c.wcel_objid = SOFTHO.WCEL_ID   
+            
         Where
             SOFTHO.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             SOFTHO.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            SOFTHO.WCEL_ID,
-            to_char(SOFTHO.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(SOFTHO.period_start_time,'YYYY-MM-DD')
         )  SOFTHO 
         
     WHERE
-        (小区软切换成功率 < 90 AND Y_小区软切换成功率 <> 0)
+        (SOFTHO.小区软切换成功率 < 90 AND SOFTHO.Y_小区软切换成功率 <> 0)
 
     ORDER BY
-        小区软切换成功率  
+        SOFTHO.city,
+        SOFTHO.小区软切换成功率  
 
  
  

@@ -1,5 +1,8 @@
     SELECT
-        servlev.WCEL_ID,
+        servlev.city,
+        servlev.wcel_rnc_id,
+        servlev.ci,
+        servlev.wbts_name,
         servlev.rpdate,
         servlev.语音业务RAB建立成功率,
         servlev.X_语音业务RAB建立SucRat,
@@ -14,8 +17,11 @@
             
     FROM
         (Select
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD') rpdate,
             ROUND(Decode(Sum(servlev.RAB_STP_ATT_CS_VOICE), 0, 0, Sum(servlev.RAB_ACC_COMP_CS_VOICE) /
             Sum(servlev.RAB_STP_ATT_CS_VOICE))*100,2) As 语音业务RAB建立成功率,
             
@@ -31,20 +37,25 @@
             
         From
             NOKRWW_PS_SERVLEV_MNC1_RAW servlev
+            Inner Join c_w_custom c on c.wcel_objid = servlev.WCEL_ID     
             
         Where
             servlev.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             servlev.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD')
         )  servlev
         
     WHERE
-        (语音业务RAB建立成功率 < 90 AND Y_语音业务RAB建立SucRat<> 0 )
+        (servlev.语音业务RAB建立成功率 < 90 AND servlev.Y_语音业务RAB建立SucRat<> 0 )
 
     ORDER BY
-        语音业务RAB建立成功率  
+        servlev.city,
+        servlev.语音业务RAB建立成功率  
 
 

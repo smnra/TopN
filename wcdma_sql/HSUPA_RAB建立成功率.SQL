@@ -1,5 +1,8 @@
     SELECT
-        TRAFFIC.WCEL_ID,
+        TRAFFIC.city,
+        TRAFFIC.wcel_rnc_id,
+        TRAFFIC.ci,
+        TRAFFIC.wbts_name,
         TRAFFIC.rpdate,
         TRAFFIC.HSUPA_RAB建立成功率,
         TRAFFIC.X_HSUPA_RAB建立成功率,
@@ -21,8 +24,11 @@
             
     FROM
         (Select
-            TRAFFIC.WCEL_ID,
-            to_char(TRAFFIC.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(TRAFFIC.period_start_time,'YYYY-MM-DD') rpdate,
 
             ROUND(Decode(Sum(TRAFFIC.ALLO_SUCCESS_EDCH_INT + TRAFFIC.ALLO_SUCCESS_EDCH_BGR +
             TRAFFIC.SETUP_FAIL_EDCH_UE_INT + TRAFFIC.SETUP_FAIL_EDCH_UE_BGR), 0, 0,
@@ -52,21 +58,26 @@
             
         From
             NOKRWW_PS_TRAFFIC_MNC1_RAW TRAFFIC
-         
+            Inner Join c_w_custom c on c.wcel_objid = TRAFFIC.WCEL_ID     
+       
         Where
             TRAFFIC.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             TRAFFIC.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            TRAFFIC.WCEL_ID,
-            to_char(TRAFFIC.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(TRAFFIC.period_start_time,'YYYY-MM-DD')
         )  TRAFFIC 
         
     WHERE
-        (HSUPA_RAB建立成功率 < 90 AND Y_HSUPA_RAB建立成功率 <> 0)
+        (TRAFFIC.HSUPA_RAB建立成功率 < 90 AND TRAFFIC.Y_HSUPA_RAB建立成功率 <> 0)
 
     ORDER BY
-        HSUPA_RAB建立成功率  
+        TRAFFIC.city,
+        TRAFFIC.HSUPA_RAB建立成功率  
   
     
    

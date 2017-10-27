@@ -1,5 +1,8 @@
     SELECT
-        INTERSHO.WCEL_ID,
+        INTERSHO.city,
+        INTERSHO.wcel_rnc_id,
+        INTERSHO.ci,
+        INTERSHO.wbts_name,
         INTERSHO.rpdate,
         INTERSHO.Cel_3_2G间分组域HO出SucR,
         INTERSHO.XCel_3_2G间分组域HO出SucR,
@@ -7,8 +10,11 @@
     
     FROM
         (Select
-            INTERSHO.WCEL_ID,
-            to_char(INTERSHO.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(INTERSHO.period_start_time,'YYYY-MM-DD') rpdate,
 
             ROUND(Decode(Sum(INTERSHO.IS_HHO_ATT_UL_DCH_Q_NRT + INTERSHO.IS_HHO_ATT_UE_TRX_PWR_NRT +
             INTERSHO.IS_HHO_ATT_DL_DPCH_PWR_NRT + INTERSHO.IS_HHO_ATT_CPICH_RSCP_NRT +
@@ -49,21 +55,26 @@
             
         From
             NOKRWW_PS_INTERSHO_MNC1_RAW INTERSHO
+            Inner Join c_w_custom c on c.wcel_objid = INTERSHO.WCEL_ID   
 
         Where
             INTERSHO.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             INTERSHO.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            INTERSHO.WCEL_ID,
-            to_char(INTERSHO.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(INTERSHO.period_start_time,'YYYY-MM-DD')
         )  INTERSHO
         
     WHERE
-        (Cel_3_2G间分组域HO出SucR < 90 AND YCel_3_2G间分组域HO出SucR <> 0)
+        (INTERSHO.Cel_3_2G间分组域HO出SucR < 90 AND INTERSHO.YCel_3_2G间分组域HO出SucR <> 0)
 
     ORDER BY
-        Cel_3_2G间分组域HO出SucR
+        INTERSHO.city,
+        INTERSHO.Cel_3_2G间分组域HO出SucR
 
 
  

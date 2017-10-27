@@ -1,5 +1,8 @@
     SELECT
-        servlev.WCEL_ID,
+        servlev.city,
+        servlev.wcel_rnc_id,
+        servlev.ci,
+        servlev.wbts_name,
         servlev.rpdate,
         servlev.RRC建立成功率,
         servlev.X_RRC建立成功率,
@@ -21,8 +24,11 @@
         
     FROM
         (Select
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD') rpdate,
             ROUND(Decode(Sum(servlev.RAB_STP_ATT_CS_VOICE + servlev.RAB_STP_ATT_CS_CONV +
             servlev.RAB_STP_ATT_CS_STREA + servlev.RAB_STP_ATT_PS_CONV + servlev.RAB_STP_ATT_PS_STREA
             + servlev.RAB_STP_ATT_PS_INTER + servlev.RAB_STP_ATT_PS_BACKG) *
@@ -85,20 +91,25 @@
             
         From
             NOKRWW_PS_SERVLEV_MNC1_RAW servlev
-            
+        Inner Join c_w_custom c on c.wcel_objid = servlev.WCEL_ID  
+        
         Where
             servlev.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             servlev.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            servlev.WCEL_ID,
-            to_char(servlev.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(servlev.period_start_time,'YYYY-MM-DD')
         )  servlev
         
     WHERE
-        (RRC建立成功率 < 97 and Y_RRC建立成功率 > 90)
+        (servlev.RRC建立成功率 < 97 and servlev.Y_RRC建立成功率 > 90)
 
     ORDER BY
-        RRC建立成功率  
+        servlev.city,
+        servlev.RRC建立成功率  
 
     

@@ -1,5 +1,8 @@
     SELECT
-        INTSYSHO.WCEL_ID,
+        INTSYSHO.city,
+        INTSYSHO.wcel_rnc_id,
+        INTSYSHO.ci,
+        INTSYSHO.wbts_name,
         INTSYSHO.rpdate,
         INTSYSHO.小区异频切换成功率,
         INTSYSHO.X_小区异频切换成功率,
@@ -7,8 +10,11 @@
     
     FROM
         (Select
-            INTSYSHO.WCEL_ID,
-            to_char(INTSYSHO.period_start_time,'YYYY-MM-DD-HH24') rpdate,
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(INTSYSHO.period_start_time,'YYYY-MM-DD') rpdate,
 
             ROUND(decode(Sum(IF_HHO_ATT_UL_DCH_Q_RT + IF_HHO_ATT_UE_TRX_PWR_RT +
             IF_HHO_ATT_DL_DPCH_PWR_RT + IF_HHO_ATT_CPICH_RSCP_RT + IF_HHO_ATT_CPICH_ECNO_RT
@@ -68,21 +74,26 @@
             
         From
             NOKRWW_PS_INTSYSHO_MNC1_RAW INTSYSHO
-         
+            Inner Join c_w_custom c on c.wcel_objid = INTSYSHO.WCEL_ID    
+            
         Where
             INTSYSHO.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             INTSYSHO.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            INTSYSHO.WCEL_ID,
-            to_char(INTSYSHO.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(INTSYSHO.period_start_time,'YYYY-MM-DD')
         )  INTSYSHO
         
     WHERE
-        (小区异频切换成功率 < 90 AND Y_小区异频切换成功率 <> 0)
+        (INTSYSHO.小区异频切换成功率 < 90 AND INTSYSHO.Y_小区异频切换成功率 <> 0)
 
     ORDER BY
-        小区异频切换成功率  
+        INTSYSHO.city,
+        INTSYSHO.小区异频切换成功率  
 
  
  

@@ -1,5 +1,8 @@
     SELECT
-        PKTCALL.WCEL_ID,
+        PKTCALL.city,
+        PKTCALL.wcel_rnc_id,
+        PKTCALL.ci,
+        PKTCALL.wbts_name,
         PKTCALL.rpdate,
         PKTCALL.HSUPA分组域业务掉线率,
         PKTCALL.X_HSUPA分组域Serv掉线率,
@@ -11,9 +14,11 @@
             
     FROM
         (Select
-            PKTCALL.WCEL_ID,
-            to_char(PKTCALL.period_start_time,'YYYY-MM-DD-HH24') rpdate,
-
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(PKTCALL.period_start_time,'YYYY-MM-DD') rpdate,
             ROUND(Decode(Sum(PKTCALL.PS_REL_RL_FAIL_HS_E_INT + PKTCALL.PS_REL_RL_FAIL_HS_E_BGR +
             PKTCALL.PS_REL_OTH_FAIL_HS_E_INT + PKTCALL.PS_REL_OTH_FAIL_HS_E_BGR +
             PKTCALL.PS_REL_NORM_HS_E_INT + PKTCALL.PS_REL_NORM_HS_E_BGR +
@@ -42,21 +47,27 @@
                        NOKRWW_PS_TRAFFIC_MNC1_RAW TRAFFIC
             Inner Join NOKRWW_PS_PKTCALL_MNC1_RAW PKTCALL On TRAFFIC.WCEL_ID = PKTCALL.WCEL_ID And
                                                TRAFFIC.PERIOD_START_TIME = PKTCALL.PERIOD_START_TIME
+            Inner Join c_w_custom c on c.wcel_objid = TRAFFIC.WCEL_ID     
             
         Where
             PKTCALL.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
             PKTCALL.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
-            PKTCALL.WCEL_ID,
-            to_char(PKTCALL.period_start_time,'YYYY-MM-DD-HH24')
+            c.city,
+            c.wcel_rnc_id,
+            c.ci,
+            c.wbts_name,
+            to_char(PKTCALL.period_start_time,'YYYY-MM-DD')
         )  PKTCALL 
         
     WHERE
-        (HSUPA分组域业务掉线率 > 20)
+        (PKTCALL.HSUPA分组域业务掉线率 > 20 and PKTCALL.Y_HSUPA分组域Serv掉线率 >50)
 
     ORDER BY
-        HSUPA分组域业务掉线率  
+        PKTCALL.city,
+        PKTCALL.HSUPA分组域业务掉线率  desc
+      
       
 
     
