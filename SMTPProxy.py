@@ -48,7 +48,7 @@ class SendMail:
         try:
             self.msg['Subject'] = Header(self.subject, 'utf-8')
             self.msg['From'] = 'SMnRa<hppall@163.com>'
-            self.msg['To'] = self.receiver
+            #self.msg['To'] = self.receiver
             client = smtplib.SMTP()
             client.connect('smtp.163.com')
             client.login(self.username, self.password)
@@ -67,5 +67,5 @@ class SendMail:
 
 
 if __name__ == '__main__' :
-    sendmail = SendMail('smnra@163.com','Modul Test','proxy,text,xlsx,jpg',['20170922_LTE_TopN.xlsx','erab.jpg'])
+    sendmail = SendMail(['hppall@163.com','liuleib@mail.xahuilong.com','smnra@163.com'],'Modul Test','proxy,text,xlsx,jpg',['20170922_LTE_TopN.xlsx','erab.jpg'])
     sendmail.senmail()

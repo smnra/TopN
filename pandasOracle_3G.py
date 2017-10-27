@@ -24,8 +24,8 @@ import getfiles
 import SMTPProxy
 
 
-start_datetime = '2017102500'
-end_datetime = '2017102600'
+start_datetime = datetime(datetime.today().year,datetime.today().month ,datetime.today().day-1).strftime("%Y%m%d") + '00'  # 昨天的日期 '2017102500'
+end_datetime = datetime.today().strftime("%Y%m%d") + '00' # 今天的日期 '2017102600'
 
 
 
@@ -86,12 +86,11 @@ conn.close ()						 #关闭数据库连接
 
 
 
-'''
-mailreceiver = 'smnra@163.com'
+
+mailreceiver = ['hppall@163.com','liuleib@mail.xahuilong.com','smnra@163.com']
 mailTitle = '3G_TopN小区'
 mailBody = 'WCDMA ' + start_datetime + ' - ' + end_datetime + 'Top 小区'
 mailAttachments = [filename]
 
 sendmail = SMTPProxy.SendMail(mailreceiver, mailTitle, mailBody, mailAttachments)    #邮件发送
 sendmail.senmail()
-'''
