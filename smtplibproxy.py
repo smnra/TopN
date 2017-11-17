@@ -55,7 +55,7 @@ import datetime
 import sys
 from email.base64mime import body_encode as encode_base64
 
-socks.set_default_proxy(socks.HTTP, "192.168.10.172", 3128)   #代理类型 地址 端口
+socks.set_default_proxy(socks.HTTP, "10.92.82.128", 3128)   #代理类型 地址 端口
 socket.socket = socks.socksocket    # 用socks 代理 smtp模块
 
 

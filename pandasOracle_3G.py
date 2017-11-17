@@ -18,14 +18,14 @@ os.environ['TNS_ADMIN'] = 'F:\\SMnRa\\smnra\\python\\3\\instantclient_12_1'
 
 import cx_Oracle        #导入oracle 支持模块
 import os                   #导入系统 模块
-from datetime import datetime         #导入 时间日期 模块
+import datetime         #导入 时间日期 模块
 import pandas as pd
 import getfiles
 import SMTPProxy
 
 
-start_datetime = datetime(datetime.today().year,datetime.today().month ,datetime.today().day-1).strftime("%Y%m%d") + '00'  # 昨天的日期 '2017102500'
-end_datetime = datetime.today().strftime("%Y%m%d") + '00' # 今天的日期 '2017102600'
+start_datetime = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d") + '00'  # 昨天的日期 '2017102500'
+end_datetime = datetime.date.today().strftime("%Y%m%d") + '00' # 今天的日期 '2017102600'
 
 
 
@@ -61,7 +61,7 @@ conn = cx_Oracle.connect('omc/omc@192.168.4.10/oss')       #建立与oracle数�
 cursor = conn.cursor ()																  #连接的游标
 
 tables = []   #保存DataFream的数组
-filename = os.getcwd() +  '\\' + datetime.today().strftime("%Y%m%d") + '_WCDMA_TopN.xlsx' #定义文件名
+filename = os.getcwd() +  '\\' + datetime.date.today().strftime("%Y%m%d") + '_WCDMA_TopN.xlsx' #定义文件名
 writer = pd.ExcelWriter(filename)       #保存表格为excel
 
 for i,sql in enumerate(sqls) :
@@ -86,11 +86,11 @@ conn.close ()						 #关闭数据库连接
 
 
 
-
-mailreceiver = ['hppall@163.com','liuleib@mail.xahuilong.com','smnra@163.com']
+mailreceiver = ['18200888504@139.com', 'smnra@163.com', 'liujianxun0801@163.com', 'qyl11219@163.com']
+mailcc = ['smnrao@outlook.com','smnra@163.com']
 mailTitle = '3G_TopN小区'
 mailBody = 'WCDMA ' + start_datetime + ' - ' + end_datetime + 'Top 小区'
 mailAttachments = [filename]
 
-sendmail = SMTPProxy.SendMail(mailreceiver, mailTitle, mailBody, mailAttachments)    #邮件发送
+sendmail = SMTPProxy.SendMail(mailreceiver, mailcc, mailTitle, mailBody, mailAttachments)    #邮件发送
 sendmail.senmail()
