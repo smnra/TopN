@@ -94,3 +94,27 @@ now.floor('month')
 
 now.replace(months=+1).floor('month')
 # 下个月 1号的时间  <Arrow [2018-01-01T00:00:00+08:00]>
+
+now.replace(months=-1).floor('month').replace(weeks=+1).floor('week')
+# 上个月的第一个周一的时间
+
+now.floor('month').replace(weeks=+1).floor('week')
+# 本月的第一个周一的时间 <Arrow [2017-12-04T00:00:00+08:00]>
+
+
+
+
+#时间格式化输出
+now.format('YYYYMMDDHH')
+#输出为字符串格式的 时间  '2017120611'
+
+
+
+
+now.replace(months=-1).floor('month').format('YYYYMMDDHH')
+# 输出字符串 上个月1号的日期  '2017110100'
+
+now.floor('month').replace(weeks=+1).floor('week').format('YYYYMMDDHH')
+# 输出字符串 本月的第一个周一的日期  '2017120400'
+
+
