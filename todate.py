@@ -76,6 +76,21 @@ now.ceil('day')
 
 #常用日期
 
+now.replace(weeks=-1).floor('week')
+#上周周一的时间  <Arrow [2017-11-27T00:00:00+08:00]>
+
+now.floor('week')
+#这周周一的时间  <Arrow [2017-12-04T00:00:00+08:00]>
+
+now.replace(weeks=+1).floor('week')
+#下周周一的时间  <Arrow [2017-12-11T00:00:00+08:00]>
 
 
+now.replace(months=-1).floor('month')
+# 上个月 1号的时间  <Arrow [2017-11-01T00:00:00+08:00]>
 
+now.floor('month')
+#这个月1号的时间  <Arrow [2017-12-01T00:00:00+08:00]>
+
+now.replace(months=+1).floor('month')
+# 下个月 1号的时间  <Arrow [2018-01-01T00:00:00+08:00]>
