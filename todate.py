@@ -127,9 +127,8 @@ def getDateRange():
     '''
     #获取参数(默认为当天)所在月份的第一个完整周 周一的日期
     '''
-    rangeDate={}
-
-
+    now = arrow.now()                                                        #当前时间
+    rangeDate={}                                                             #定义返回值  字典
     lastMonth_1st_day = now.floor('month').replace(months = -1)             #上个月1号的日期
     thisMonth_1st_day = now.floor('month')                                  #这个月1号的日期
     nextMonth_1st_day = now.floor('month').replace(months = +1)             #下个月1号的日期
@@ -141,11 +140,11 @@ def getDateRange():
         thisMonth_1st_Monday = now.floor('month').replace(weeks = +1).floor('week')      #否则这个月的第一个完整周 的 周一的日期 就是当月1号所在的下一周的周一的日期
 
     if thisWeek_Monday - thisMonth_1st_Monday == thisWeek_Monday - thisWeek_Monday :       #如果 这一周周一的日期  减去这个月的第一个完整周 周一的日期 如果结果等于0
-        rangeDate['startDate'] = lastMonth_1st_day               #开始时间就是上个月1号
-        rangeDate['endDate'] = thisMonth_1st_Monday               #结束时间就是这个月的第一个完整周 周一的日期
+        rangeDate['startDate'] = lastMonth_1st_day.format('YYYYMMDDHH')               #开始时间就是上个月1号
+        rangeDate['endDate'] = thisMonth_1st_Monday.format('YYYYMMDDHH')               #结束时间就是这个月的第一个完整周 周一的日期
     else :
-        rangeDate['startDate'] = thisMonth_1st_day               #开始时间就是这个月1号
-        rangeDate['endDate'] = nextMonth_1st_day                 #结束时间就是这个月的第一个完整周 周一的日期
+        rangeDate['startDate'] = thisMonth_1st_day.format('YYYYMMDDHH')               #开始时间就是这个月1号
+        rangeDate['endDate'] = nextMonth_1st_day.format('YYYYMMDDHH')                 #结束时间就是这个月的第一个完整周 周一的日期
 
     return rangeDate
 
