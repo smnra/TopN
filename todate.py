@@ -3,8 +3,9 @@ import arrow
 
 now = arrow.now()
 #获取当前时间  <Arrow [2017-12-06T11:42:32.079055+08:00]>
-print(now)
+#print(now)
 
+'''
 now.year
 #年 2017
 now.month
@@ -117,4 +118,36 @@ now.replace(months=-1).floor('month').format('YYYYMMDDHH')
 now.floor('month').replace(weeks=+1).floor('week').format('YYYYMMDDHH')
 # 输出字符串 本月的第一个周一的日期  '2017120400'
 
+now.floor('month').format('YYYYMMDDHH')
+# 输出字符串 本月的第一天的日期  '2017120100'
 
+'''
+
+def getDateRange():
+    '''
+    #获取参数(默认为当天)所在月份的第一个完整周 周一的日期
+    '''
+    rangeDate={}
+
+
+    lastMonth_1st_day = now.floor('month').replace(months = -1)             #上个月1号的日期
+    thisMonth_1st_day = now.floor('month')                                  #这个月1号的日期
+    nextMonth_1st_day = now.floor('month').replace(months = +1)             #下个月1号的日期
+    lastWeek_Monday = now.replace(weeks = -1).floor('week')             #上一周周一的日期
+    thisWeek_Monday = now.floor('week')                                 #这一周周一的日期
+    if thisMonth_1st_day.isoweekday() == 1 :                                #如果这个月的1号是周一,
+        thisMonth_1st_Monday = now.floor('month')                           #则这个月的第一个完整周 的 周一的日期 就是当月的1号的日期
+    else :
+        thisMonth_1st_Monday = now.floor('month').replace(weeks = +1).floor('week')      #否则这个月的第一个完整周 的 周一的日期 就是当月1号所在的下一周的周一的日期
+
+    if thisWeek_Monday - thisMonth_1st_Monday == thisWeek_Monday - thisWeek_Monday :       #如果 这一周周一的日期  减去这个月的第一个完整周 周一的日期 如果结果等于0
+        rangeDate['startDate'] = lastMonth_1st_day               #开始时间就是上个月1号
+        rangeDate['endDate'] = thisMonth_1st_Monday               #结束时间就是这个月的第一个完整周 周一的日期
+    else :
+        rangeDate['startDate'] = thisMonth_1st_day               #开始时间就是这个月1号
+        rangeDate['endDate'] = nextMonth_1st_day                 #结束时间就是这个月的第一个完整周 周一的日期
+
+    return rangeDate
+
+if __name__ == '__main__' :
+    print(getDateRange())
