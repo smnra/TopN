@@ -129,6 +129,8 @@ def getDateRange():
     '''
     now = arrow.now()                                                        #当前时间
     rangeDate={}                                                             #定义返回值  字典
+    rangeDate['today'] = arrow.now().format('YYYYMMDDHH')                 #今日的日期
+
     lastMonth_1st_day = now.floor('month').replace(months = -1)             #上个月1号的日期
     thisMonth_1st_day = now.floor('month')                                  #这个月1号的日期
     nextMonth_1st_day = now.floor('month').replace(months = +1)             #下个月1号的日期
