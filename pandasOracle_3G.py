@@ -24,6 +24,7 @@ import getfiles
 import SMTPProxy
 
 
+
 start_datetime = (datetime.date.today() - datetime.timedelta(days=1)).strftime("%Y%m%d") + '00'  # 昨天的日期 '2017102500'
 end_datetime = datetime.date.today().strftime("%Y%m%d") + '00' # 今天的日期 '2017102600'
 
