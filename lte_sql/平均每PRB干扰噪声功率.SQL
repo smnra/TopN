@@ -1,10 +1,55 @@
+WITH busyhour_dl as
+(SELECT 
+       lncel_id,
+       MAX(period_start_time) AS period_start_time
+       
+FROM 
+        (SELECT
+                lncel_id,
+                period_start_time,
+                下行最大业务量,
+                rank() over( Partition by lncel_id Order by 下行最大业务量 DESC) AS RANKS
+                
+        FROM
+                 (SELECT 
+                    lcellt.lncel_id AS lncel_id,
+                   lcellt.period_start_time AS period_start_time,
+                    SUM(PDCP_SDU_VOL_DL)  AS 下行最大业务量
+                    
+                FROM 
+                    NOKLTE_PS_LCELLT_LNCEL_HOUR lcellt
+                WHERE 
+                        lcellt.period_start_time >= to_date(&start_datetime, 'yyyy-mm-dd-hh24')
+                    AND lcellt.period_start_time < to_date(&end_datetime, 'yyyy-mm-dd-hh24')
+                    AND PDCP_SDU_VOL_DL >0
+
+                GROUP BY 
+                    lcellt.lncel_id,
+                    lcellt.period_start_time
+                    
+                )
+                
+        )
+        
+WHERE
+    RANKS =1
+    
+GROUP BY
+    lncel_id
+    
+)
+
+
+
+
+
 select *
 from 
     (SELECT
         lpqul.city,
         lpqul.ci,
         lpqul.lnbts_name,
-        lpqul.rpdate,
+        lpqul.period_start_time,
         rank() over( Partition by lpqul.city Order by lpqul.平均每PRB干扰噪声功率 DESC) AS RANKS,
         lpqul.平均每PRB干扰噪声功率,
         lpqul.RSSI_PUCCH_MIN,
@@ -17,7 +62,7 @@ from
             c.city,
             c.ci,
             c.lnbts_name,
-            to_char(lpqul.period_start_time,'YYYY-MM-DD') rpdate,
+            to_char(lpqul.period_start_time,'YYYY-MM-DD') period_start_time,
 
             decode(sum((lpqul.RSSI_PUSCH_LEVEL_01)+(lpqul.RSSI_PUSCH_LEVEL_02)+
             (lpqul.RSSI_PUSCH_LEVEL_03)+(lpqul.RSSI_PUSCH_LEVEL_04)+(lpqul.RSSI_PUSCH_LEVEL_05)+
@@ -70,11 +115,12 @@ from
             
         FROM
             NOKLTE_PS_LPQUL_LNCEL_HOUR lpqul
-
-        Inner Join C_LTE_CUSTOM c on c.lncel_objid = lpqul.lncel_id
+            inner join busyhour_dl on busyhour_dl.lncel_id = lpqul.lncel_id
+                                  and busyhour_dl.period_start_time = lpqul.period_start_time
+            left Join C_LTE_CUSTOM c on c.lncel_objid = busyhour_dl.lncel_id
         
         Where
-            lpqul.PERIOD_START_TIME >= To_Date(&start_dateTime, 'yyyy-mm-dd-hh24') And
+            lpqul.PERIOD_START_TIME >= To_Date(&start_datetime, 'yyyy-mm-dd-hh24') And
             lpqul.PERIOD_START_TIME < To_Date(&end_datetime, 'yyyy-mm-dd-hh24')
             
         Group By
@@ -96,4 +142,4 @@ from
     ) 
 
 WHERE
-    RANKS <=10         
+    RANKS <=5        

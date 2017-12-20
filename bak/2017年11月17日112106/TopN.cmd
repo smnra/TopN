@@ -1,0 +1,1 @@
+F: && cd F:\SMnRa\smnra\python\3\TopN\ && F:\SMnRa\smnra\python\3\TopN\topn_3g.cmd &&  F:\SMnRa\smnra\python\3\TopN\topn_4g.cmd
